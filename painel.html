@@ -1,0 +1,554 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Painel Administrativo - Dia das Mães</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: Arial, sans-serif; }
+    body {
+      background: linear-gradient(135deg, #fff6f8 0%, #ffe9ef 45%, #fff1f4 100%);
+      min-height: 100vh;
+      padding: 24px;
+      color: #402c35;
+    }
+    .page {
+      width: 100%;
+      max-width: 1250px;
+      margin: 0 auto;
+    }
+    .topbar {
+      background: rgba(255,255,255,0.96);
+      border: 1px solid #f0dfe6;
+      border-radius: 24px;
+      padding: 22px;
+      box-shadow: 0 18px 40px rgba(145, 64, 92, 0.10);
+      margin-bottom: 20px;
+    }
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      flex-wrap: wrap;
+      margin-bottom: 16px;
+    }
+    .brand img {
+      width: 70px;
+      height: 70px;
+      border-radius: 18px;
+      object-fit: cover;
+      border: 1px solid #f0dfe6;
+      background: #fff;
+      padding: 6px;
+    }
+    .brand h1 {
+      font-size: 28px;
+      color: #a32153;
+      margin-bottom: 4px;
+    }
+    .brand p {
+      color: #6f5b64;
+      font-size: 14px;
+    }
+    .stats {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 12px;
+      margin-top: 16px;
+    }
+    .stat-card {
+      background: linear-gradient(135deg, #fff9fb, #fff4f8);
+      border: 1px solid #f5d7e3;
+      border-radius: 18px;
+      padding: 16px;
+    }
+    .stat-card span {
+      display: block;
+      font-size: 12px;
+      color: #8d2a53;
+      margin-bottom: 6px;
+    }
+    .stat-card strong {
+      font-size: 24px;
+      color: #402c35;
+    }
+    .toolbar {
+      background: rgba(255,255,255,0.96);
+      border: 1px solid #f0dfe6;
+      border-radius: 24px;
+      padding: 18px;
+      box-shadow: 0 18px 40px rgba(145, 64, 92, 0.10);
+      margin-bottom: 20px;
+      display: grid;
+      grid-template-columns: 1.2fr 1fr 1fr auto auto;
+      gap: 12px;
+      align-items: end;
+    }
+    .field {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+    label {
+      font-weight: bold;
+      color: #513943;
+      font-size: 14px;
+    }
+    input, select {
+      width: 100%;
+      padding: 14px 15px;
+      border: 1px solid #ead5dd;
+      border-radius: 14px;
+      font-size: 14px;
+      outline: none;
+      background: #fff;
+      color: #402c35;
+    }
+    input:focus, select:focus {
+      border-color: #d54f82;
+      box-shadow: 0 0 0 4px rgba(213,79,130,0.10);
+    }
+    button, .link-btn {
+      background: linear-gradient(135deg, #d74678, #a92555);
+      color: #fff;
+      border: none;
+      padding: 14px 18px;
+      border-radius: 14px;
+      font-size: 14px;
+      font-weight: bold;
+      cursor: pointer;
+      text-decoration: none;
+      display: inline-block;
+      text-align: center;
+    }
+    .ghost-btn {
+      background: #fff6f8;
+      color: #a32153;
+      border: 1px solid #f0dfe6;
+      box-shadow: none;
+    }
+    .status {
+      margin-bottom: 16px;
+      padding: 14px;
+      border-radius: 14px;
+      display: none;
+      font-size: 14px;
+      line-height: 1.5;
+      white-space: pre-wrap;
+      word-break: break-word;
+      background: #ffebee;
+      color: #b71c1c;
+      border: 1px solid #ef9a9a;
+    }
+    .status.show {
+      display: block;
+    }
+    .content {
+      display: grid;
+      grid-template-columns: 1.2fr 0.8fr;
+      gap: 20px;
+    }
+    .panel {
+      background: rgba(255,255,255,0.96);
+      border: 1px solid #f0dfe6;
+      border-radius: 24px;
+      padding: 18px;
+      box-shadow: 0 18px 40px rgba(145, 64, 92, 0.10);
+    }
+    .panel h2 {
+      color: #a32153;
+      font-size: 20px;
+      margin-bottom: 14px;
+    }
+    .list {
+      display: grid;
+      gap: 14px;
+    }
+    .card {
+      border: 1px solid #f0dfe6;
+      border-radius: 20px;
+      padding: 14px;
+      display: grid;
+      grid-template-columns: 120px 1fr;
+      gap: 14px;
+      cursor: pointer;
+      transition: 0.2s;
+      background: #fff;
+    }
+    .card:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 10px 20px rgba(145, 64, 92, 0.08);
+    }
+    .card.active {
+      border-color: #d54f82;
+      box-shadow: 0 0 0 4px rgba(213,79,130,0.10);
+    }
+    .card img {
+      width: 120px;
+      height: 120px;
+      object-fit: cover;
+      border-radius: 16px;
+      border: 1px solid #f0dfe6;
+    }
+    .chips {
+      margin-bottom: 8px;
+    }
+    .chip {
+      background: #fff2f7;
+      color: #a32153;
+      padding: 6px 10px;
+      border-radius: 999px;
+      font-size: 12px;
+      border: 1px solid #f5d7e3;
+      display: inline-block;
+      margin-right: 8px;
+      margin-bottom: 8px;
+    }
+    .chip.muted {
+      background: #faf5f7;
+      color: #6f5b64;
+      border-color: #eee3e8;
+    }
+    .detail-empty {
+      color: #7a6670;
+      font-size: 14px;
+      line-height: 1.6;
+      padding: 20px 0;
+    }
+    .detail-image {
+      width: 100%;
+      max-height: 360px;
+      object-fit: contain;
+      border-radius: 18px;
+      border: 1px solid #f0dfe6;
+      background: #fff;
+      margin-bottom: 14px;
+    }
+    .detail-info p {
+      margin-bottom: 10px;
+      line-height: 1.6;
+    }
+    .detail-actions {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin-top: 14px;
+    }
+    @media (max-width: 1024px) {
+      .toolbar {
+        grid-template-columns: 1fr 1fr;
+      }
+      .content {
+        grid-template-columns: 1fr;
+      }
+      .stats {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+    @media (max-width: 640px) {
+      .stats {
+        grid-template-columns: 1fr;
+      }
+      .toolbar {
+        grid-template-columns: 1fr;
+      }
+      .card {
+        grid-template-columns: 1fr;
+      }
+      .card img {
+        width: 100%;
+        height: 220px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <div class="topbar">
+      <div class="brand">
+        <img id="schoolLogo" src="https://placehold.co/120x120/png?text=Logo" alt="Logo da escola">
+        <div>
+          <h1>Painel Administrativo</h1>
+          <p>Gerencie os envios de fotos e informações do Dia das Mães em uma página separada.</p>
+        </div>
+      </div>
+
+      <div class="stats">
+        <div class="stat-card">
+          <span>Total de envios</span>
+          <strong id="statTotal">0</strong>
+        </div>
+        <div class="stat-card">
+          <span>Turmas com envio</span>
+          <strong id="statTurmas">0</strong>
+        </div>
+        <div class="stat-card">
+          <span>Turma filtrada</span>
+          <strong id="statFiltro">Todas</strong>
+        </div>
+        <div class="stat-card">
+          <span>Selecionado</span>
+          <strong id="statSelecionado">Nenhum</strong>
+        </div>
+      </div>
+    </div>
+
+    <div class="toolbar">
+      <div class="field">
+        <label for="busca">Buscar por aluno ou mãe</label>
+        <input type="text" id="busca" placeholder="Digite um nome para buscar">
+      </div>
+
+      <div class="field">
+        <label for="filtroTurma">Filtrar por turma</label>
+        <select id="filtroTurma">
+          <option value="">Todas as turmas</option>
+          <option value="Maternal">Maternal</option>
+          <option value="Grupo 1">Grupo 1</option>
+          <option value="Grupo 2">Grupo 2</option>
+          <option value="Grupo 3">Grupo 3</option>
+          <option value="Fundamental I - 1º Ano">Fundamental I - 1º Ano</option>
+          <option value="Fundamental I - 2º Ano">Fundamental I - 2º Ano</option>
+          <option value="Fundamental I - 3º Ano">Fundamental I - 3º Ano</option>
+          <option value="Fundamental I - 4º Ano">Fundamental I - 4º Ano</option>
+          <option value="Fundamental I - 5º Ano">Fundamental I - 5º Ano</option>
+          <option value="Fundamental II - 6º Ano">Fundamental II - 6º Ano</option>
+          <option value="Fundamental II - 7º Ano">Fundamental II - 7º Ano</option>
+          <option value="Fundamental II - 8º Ano">Fundamental II - 8º Ano</option>
+          <option value="Fundamental II - 9º Ano">Fundamental II - 9º Ano</option>
+          <option value="Ensino Médio - 1ª Série">Ensino Médio - 1ª Série</option>
+          <option value="Ensino Médio - 2ª Série">Ensino Médio - 2ª Série</option>
+          <option value="Ensino Médio - 3ª Série">Ensino Médio - 3ª Série</option>
+        </select>
+      </div>
+
+      <div class="field">
+        <label for="ordenacao">Ordenar por</label>
+        <select id="ordenacao">
+          <option value="recentes">Mais recentes</option>
+          <option value="aluno">Nome do aluno</option>
+          <option value="mae">Nome da mãe</option>
+          <option value="turma">Turma</option>
+        </select>
+      </div>
+
+      <button id="btnAtualizar" type="button">Atualizar</button>
+      <button id="btnLimpar" type="button" class="ghost-btn">Limpar filtros</button>
+    </div>
+
+    <div id="status" class="status"></div>
+
+    <div class="content">
+      <div class="panel">
+        <h2>Lista de envios</h2>
+        <div id="listaEnvios" class="list"></div>
+      </div>
+
+      <div class="panel">
+        <h2>Detalhes do envio</h2>
+        <div id="detalheEnvio" class="detail-empty">Selecione um envio na lista para visualizar a foto maior e todas as informações.</div>
+      </div>
+    </div>
+  </div>
+
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+    import {
+      getFirestore,
+      collection,
+      getDocs,
+      query,
+      orderBy
+    } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyB0j8iyopQzo0o6h2T9gnRMbmzUbsVfgXA",
+      authDomain: "fotosmaes-1e861.firebaseapp.com",
+      projectId: "fotosmaes-1e861",
+      storageBucket: "fotosmaes-1e861.firebasestorage.app",
+      messagingSenderId: "653639048099",
+      appId: "1:653639048099:web:716bf946f3c6bf536c5816"
+    };
+
+    const LOGO_URL = "COLE_AQUI_O_LINK_DA_LOGO";
+
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+
+    const schoolLogo = document.getElementById("schoolLogo");
+    schoolLogo.src = LOGO_URL;
+
+    const buscaInput = document.getElementById("busca");
+    const filtroTurma = document.getElementById("filtroTurma");
+    const ordenacao = document.getElementById("ordenacao");
+    const btnAtualizar = document.getElementById("btnAtualizar");
+    const btnLimpar = document.getElementById("btnLimpar");
+    const listaEnvios = document.getElementById("listaEnvios");
+    const detalheEnvio = document.getElementById("detalheEnvio");
+    const statusBox = document.getElementById("status");
+
+    const statTotal = document.getElementById("statTotal");
+    const statTurmas = document.getElementById("statTurmas");
+    const statFiltro = document.getElementById("statFiltro");
+    const statSelecionado = document.getElementById("statSelecionado");
+
+    let todosEnvios = [];
+    let enviosFiltrados = [];
+    let envioSelecionadoId = null;
+
+    btnAtualizar.addEventListener("click", carregarEnvios);
+    btnLimpar.addEventListener("click", () => {
+      buscaInput.value = "";
+      filtroTurma.value = "";
+      ordenacao.value = "recentes";
+      aplicarFiltros();
+    });
+
+    buscaInput.addEventListener("input", aplicarFiltros);
+    filtroTurma.addEventListener("change", aplicarFiltros);
+    ordenacao.addEventListener("change", aplicarFiltros);
+
+    carregarEnvios();
+
+    async function carregarEnvios() {
+      showStatus("Carregando envios...");
+      listaEnvios.innerHTML = "";
+      detalheEnvio.innerHTML = "Selecione um envio na lista para visualizar a foto maior e todas as informações.";
+      envioSelecionadoId = null;
+      statSelecionado.textContent = "Nenhum";
+
+      try {
+        const consulta = query(collection(db, "envios_dia_das_maes"), orderBy("criadoEm", "desc"));
+        const snapshot = await getDocs(consulta);
+
+        todosEnvios = snapshot.docs.map((doc) => ({
+          id: doc.id,
+          ...doc.data()
+        }));
+
+        aplicarFiltros();
+        hideStatus();
+      } catch (error) {
+        console.error("ERRO AO CARREGAR:", error);
+        showStatus("Erro ao carregar os envios: " + (error?.message || error), true);
+      }
+    }
+
+    function aplicarFiltros() {
+      const busca = buscaInput.value.trim().toLowerCase();
+      const turma = filtroTurma.value;
+      const ordem = ordenacao.value;
+
+      enviosFiltrados = todosEnvios.filter((item) => {
+        const aluno = (item.aluno || "").toLowerCase();
+        const mae = (item.mae || "").toLowerCase();
+        const turmaOk = !turma || item.turma === turma;
+        const buscaOk = !busca || aluno.includes(busca) || mae.includes(busca);
+        return turmaOk && buscaOk;
+      });
+
+      enviosFiltrados.sort((a, b) => {
+        if (ordem === "aluno") return (a.aluno || "").localeCompare(b.aluno || "", "pt-BR");
+        if (ordem === "mae") return (a.mae || "").localeCompare(b.mae || "", "pt-BR");
+        if (ordem === "turma") return (a.turma || "").localeCompare(b.turma || "", "pt-BR");
+
+        const dataA = a.criadoEm?.toDate ? a.criadoEm.toDate().getTime() : 0;
+        const dataB = b.criadoEm?.toDate ? b.criadoEm.toDate().getTime() : 0;
+        return dataB - dataA;
+      });
+
+      atualizarEstatisticas();
+      renderizarLista();
+    }
+
+    function atualizarEstatisticas() {
+      const turmasUnicas = new Set(enviosFiltrados.map(item => item.turma).filter(Boolean));
+      statTotal.textContent = String(enviosFiltrados.length);
+      statTurmas.textContent = String(turmasUnicas.size);
+      statFiltro.textContent = filtroTurma.value || "Todas";
+    }
+
+    function renderizarLista() {
+      listaEnvios.innerHTML = "";
+
+      if (!enviosFiltrados.length) {
+        listaEnvios.innerHTML = '<div class="detail-empty">Nenhum envio encontrado com os filtros atuais.</div>';
+        detalheEnvio.innerHTML = 'Selecione um envio na lista para visualizar a foto maior e todas as informações.';
+        envioSelecionadoId = null;
+        statSelecionado.textContent = "Nenhum";
+        return;
+      }
+
+      enviosFiltrados.forEach((item, index) => {
+        const dataEnvio = item.criadoEm?.toDate ? item.criadoEm.toDate().toLocaleString("pt-BR") : "Data não disponível";
+        const card = document.createElement("div");
+        card.className = "card" + (item.id === envioSelecionadoId ? " active" : "");
+        card.innerHTML = `
+          <img src="${item.fotoURL || ""}" alt="Foto enviada">
+          <div>
+            <div class="chips">
+              <span class="chip">${item.turma || "-"}</span>
+              <span class="chip muted">${dataEnvio}</span>
+            </div>
+            <p><strong>Aluno:</strong> ${item.aluno || "-"}</p>
+            <p><strong>Mãe/Responsável:</strong> ${item.mae || "-"}</p>
+          </div>
+        `;
+
+        card.addEventListener("click", () => {
+          envioSelecionadoId = item.id;
+          renderizarLista();
+          renderizarDetalhes(item);
+        });
+
+        listaEnvios.appendChild(card);
+
+        if (!envioSelecionadoId && index === 0) {
+          envioSelecionadoId = item.id;
+          renderizarDetalhes(item);
+        }
+      });
+    }
+
+    function renderizarDetalhes(item) {
+      const dataEnvio = item.criadoEm?.toDate ? item.criadoEm.toDate().toLocaleString("pt-BR") : "Data não disponível";
+      statSelecionado.textContent = item.aluno || "Selecionado";
+
+      detalheEnvio.innerHTML = `
+        <img class="detail-image" src="${item.fotoURL || ""}" alt="Foto enviada">
+        <div class="detail-info">
+          <p><strong>Aluno:</strong> ${item.aluno || "-"}</p>
+          <p><strong>Mãe/Responsável:</strong> ${item.mae || "-"}</p>
+          <p><strong>Turma:</strong> ${item.turma || "-"}</p>
+          <p><strong>Data do envio:</strong> ${dataEnvio}</p>
+          <p><strong>Arquivo:</strong> ${item.nomeArquivo || "-"}</p>
+          <p><strong>Link da foto:</strong> ${item.fotoURL || "-"}</p>
+        </div>
+        <div class="detail-actions">
+          <a class="link-btn" href="${item.fotoURL || "#"}" target="_blank">Abrir foto</a>
+          <a class="link-btn ghost-btn" href="${item.fotoURL || "#"}" download>Baixar foto</a>
+        </div>
+      `;
+    }
+
+    function showStatus(message, isError = false) {
+      statusBox.textContent = message;
+      statusBox.className = "status show";
+      if (!isError) {
+        statusBox.style.background = "#fff8e1";
+        statusBox.style.color = "#8a5b00";
+        statusBox.style.border = "1px solid #f3d27a";
+      } else {
+        statusBox.style.background = "#ffebee";
+        statusBox.style.color = "#b71c1c";
+        statusBox.style.border = "1px solid #ef9a9a";
+      }
+    }
+
+    function hideStatus() {
+      statusBox.className = "status";
+      statusBox.textContent = "";
+    }
+  </script>
+</body>
+</html>

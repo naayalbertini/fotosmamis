@@ -1,0 +1,428 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Envio de Fotos - Dia das Mães</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: Arial, sans-serif; }
+    body {
+      background:
+        radial-gradient(circle at top left, rgba(255,255,255,0.9), transparent 35%),
+        linear-gradient(135deg, #fff6f8 0%, #ffe9ef 45%, #fff1f4 100%);
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+    }
+    .container {
+      width: 100%;
+      max-width: 980px;
+      background: rgba(255,255,255,0.88);
+      backdrop-filter: blur(10px);
+      border-radius: 28px;
+      box-shadow: 0 20px 60px rgba(145, 64, 92, 0.18);
+      overflow: hidden;
+      display: grid;
+      grid-template-columns: 1fr 1.05fr;
+      border: 1px solid rgba(255,255,255,0.65);
+    }
+    .left-panel {
+      background: linear-gradient(160deg, #cf4f7e 0%, #b93668 55%, #91244d 100%);
+      color: #fff;
+      padding: 44px 36px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      position: relative;
+    }
+    .left-panel::after {
+      content: "";
+      position: absolute;
+      width: 220px;
+      height: 220px;
+      border-radius: 50%;
+      background: rgba(255,255,255,0.08);
+      top: -40px;
+      right: -60px;
+    }
+    .left-panel::before {
+      content: "";
+      position: absolute;
+      width: 180px;
+      height: 180px;
+      border-radius: 50%;
+      background: rgba(255,255,255,0.05);
+      bottom: -50px;
+      left: -50px;
+    }
+    .badge {
+      display: inline-block;
+      padding: 8px 14px;
+      border-radius: 999px;
+      background: rgba(255,255,255,0.16);
+      font-size: 12px;
+      letter-spacing: 0.4px;
+      margin-bottom: 18px;
+      width: fit-content;
+    }
+    .left-panel h1 {
+      font-size: 40px;
+      line-height: 1.1;
+      margin-bottom: 14px;
+      position: relative;
+      z-index: 1;
+    }
+    .left-panel p {
+      font-size: 15px;
+      line-height: 1.7;
+      color: rgba(255,255,255,0.92);
+      position: relative;
+      z-index: 1;
+    }
+    .info-cards {
+      margin-top: 28px;
+      display: grid;
+      gap: 12px;
+      position: relative;
+      z-index: 1;
+    }
+    .info-card {
+      background: rgba(255,255,255,0.11);
+      border: 1px solid rgba(255,255,255,0.18);
+      border-radius: 18px;
+      padding: 14px 16px;
+      font-size: 14px;
+      line-height: 1.5;
+    }
+    .form-panel {
+      padding: 42px 34px;
+      background: rgba(255,255,255,0.96);
+    }
+    .logo {
+      margin-bottom: 16px;
+    }
+    .logo h2 {
+      color: #a32153;
+      font-size: 28px;
+      margin-bottom: 6px;
+    }
+    .logo p {
+      color: #6f5b64;
+      font-size: 14px;
+      line-height: 1.6;
+    }
+    .banner {
+      background: linear-gradient(135deg, #fff4f7, #fffafb);
+      border: 1px solid #f5d7e3;
+      color: #8d2a53;
+      border-radius: 18px;
+      padding: 16px;
+      font-size: 14px;
+      margin: 20px 0 24px;
+      line-height: 1.6;
+    }
+    form {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+    .field {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+    label {
+      font-weight: bold;
+      color: #513943;
+      font-size: 14px;
+    }
+    input, select {
+      width: 100%;
+      padding: 15px 16px;
+      border: 1px solid #ead5dd;
+      border-radius: 16px;
+      font-size: 15px;
+      outline: none;
+      transition: 0.2s;
+      background: #fff;
+      color: #402c35;
+    }
+    input:focus, select:focus {
+      border-color: #d54f82;
+      box-shadow: 0 0 0 4px rgba(213,79,130,0.10);
+    }
+    .file-box {
+      border: 2px dashed #e7a7bf;
+      background: linear-gradient(135deg, #fff9fb, #fff4f8);
+      border-radius: 20px;
+      padding: 18px;
+    }
+    .file-info {
+      font-size: 13px;
+      color: #7b6871;
+      margin-top: 8px;
+      line-height: 1.5;
+    }
+    button {
+      background: linear-gradient(135deg, #d74678, #a92555);
+      color: #fff;
+      border: none;
+      padding: 16px;
+      border-radius: 16px;
+      font-size: 16px;
+      font-weight: bold;
+      cursor: pointer;
+      transition: 0.2s;
+      box-shadow: 0 12px 24px rgba(169,37,85,0.20);
+    }
+    button:hover { transform: translateY(-1px); opacity: 0.97; }
+    button:disabled {
+      opacity: 0.7;
+      cursor: not-allowed;
+      transform: none;
+    }
+    .status {
+      margin-top: 18px;
+      padding: 14px;
+      border-radius: 14px;
+      display: none;
+      font-size: 14px;
+      line-height: 1.5;
+    }
+    .status.success {
+      display: block;
+      background: #e8f5e9;
+      color: #1b5e20;
+      border: 1px solid #a5d6a7;
+    }
+    .status.error {
+      display: block;
+      background: #ffebee;
+      color: #b71c1c;
+      border: 1px solid #ef9a9a;
+    }
+    .footer {
+      text-align: center;
+      font-size: 12px;
+      color: #8c7780;
+      margin-top: 20px;
+    }
+    .preview {
+      margin-top: 14px;
+      display: none;
+    }
+    .preview img {
+      width: 100%;
+      max-height: 260px;
+      object-fit: cover;
+      border-radius: 16px;
+      border: 1px solid #f0dfe6;
+    }
+    @media (max-width: 860px) {
+      .container {
+        grid-template-columns: 1fr;
+      }
+      .left-panel, .form-panel {
+        padding: 28px 22px;
+      }
+      .left-panel h1 {
+        font-size: 32px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="left-panel">
+      <span class="badge">Escola Traços e Letras & Colégio Antoni Gaudi</span>
+      <h1>Dia das Mães<br>com carinho e memória</h1>
+      <p>Envie uma foto especial para fazermos uma homenagem emocionante. O preenchimento é simples, rápido e seguro.</p>
+
+      <div class="info-cards">
+        <div class="info-card"><strong>1.</strong> Escolha a turma correta do aluno.</div>
+        <div class="info-card"><strong>2.</strong> Informe o nome completo do aluno e da mãe ou responsável.</div>
+        <div class="info-card"><strong>3.</strong> Envie uma foto bonita e com boa qualidade.</div>
+      </div>
+    </div>
+
+    <div class="form-panel">
+      <div class="logo">
+        <h2>Envio de Foto</h2>
+        <p>Preencha os dados abaixo para participar da homenagem do Dia das Mães.</p>
+      </div>
+
+      <div class="banner">
+        Escolha a turma corretamente e envie uma imagem nítida. 
+      </div>
+
+      <form id="photoForm">
+      <div class="field">
+        <label for="turma">Turma do aluno</label>
+        <select id="turma" required>
+          <option value="">Selecione a turma</option>
+          <option value="Maternal">Maternal</option>
+          <option value="Grupo 1">Grupo 1</option>
+          <option value="Grupo 2">Grupo 2</option>
+          <option value="Grupo 3">Grupo 3</option>
+          <option value="Fundamental I - 1º Ano">Fundamental I - 1º Ano</option>
+          <option value="Fundamental I - 2º Ano">Fundamental I - 2º Ano</option>
+          <option value="Fundamental I - 3º Ano">Fundamental I - 3º Ano</option>
+          <option value="Fundamental I - 4º Ano">Fundamental I - 4º Ano</option>
+          <option value="Fundamental I - 5º Ano">Fundamental I - 5º Ano</option>
+          <option value="Fundamental II - 6º Ano">Fundamental II - 6º Ano</option>
+          <option value="Fundamental II - 7º Ano">Fundamental II - 7º Ano</option>
+          <option value="Fundamental II - 8º Ano">Fundamental II - 8º Ano</option>
+          <option value="Fundamental II - 9º Ano">Fundamental II - 9º Ano</option>
+          <option value="Ensino Médio - 1ª Série">Ensino Médio - 1ª Série</option>
+          <option value="Ensino Médio - 2ª Série">Ensino Médio - 2ª Série</option>
+          <option value="Ensino Médio - 3ª Série">Ensino Médio - 3ª Série</option>
+        </select>
+      </div>
+
+      <div class="field">
+        <label for="aluno">Nome completo do aluno</label>
+        <input type="text" id="aluno" placeholder="Digite o nome completo do aluno" required />
+      </div>
+
+      <div class="field">
+        <label for="mae">Nome completo da mãe ou responsável</label>
+        <input type="text" id="mae" placeholder="Digite o nome completo da mãe ou responsável" required />
+      </div>
+
+      <div class="file-box">
+        <label for="foto">Foto</label>
+        <input type="file" id="foto" accept="image/*" required />
+        <div class="file-info">Formatos aceitos: JPG, PNG e WEBP.</div>
+        <div class="preview" id="previewBox">
+          <img id="previewImg" alt="Pré-visualização da foto" />
+        </div>
+      </div>
+
+      <button type="submit" id="submitBtn">Enviar foto</button>
+    </form>
+
+    <div class="status" id="status"></div>
+
+    <div class="footer">
+      Nay Cordeiro - Escola Traços e Letras e Colégio Antoni Gaudi
+    </div>
+  </div>
+
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+    import { getFirestore, collection, addDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+    import { getStorage, ref, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-storage.js";
+
+    // COLOQUE AQUI AS CONFIGURAÇÕES DO SEU FIREBASE
+    const firebaseConfig = {
+      apiKey: "AIzaSyB0j8iyopQzo0o6h2T9gnRMbmzUbsVfgXA",
+      authDomain: "fotosmaes-1e861.firebaseapp.com",
+      projectId: "fotosmaes-1e861",
+      storageBucket: "fotosmaes-1e861.firebasestorage.app",
+      messagingSenderId: "653639048099",
+      appId: "1:653639048099:web:716bf946f3c6bf536c5816"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+    const storage = getStorage(app);
+
+    const form = document.getElementById("photoForm");
+    const statusBox = document.getElementById("status");
+    const submitBtn = document.getElementById("submitBtn");
+    const fotoInput = document.getElementById("foto");
+    const previewBox = document.getElementById("previewBox");
+    const previewImg = document.getElementById("previewImg");
+
+    fotoInput.addEventListener("change", () => {
+      const file = fotoInput.files[0];
+      if (!file) {
+        previewBox.style.display = "none";
+        return;
+      }
+
+      const allowedTypes = ["image/jpeg", "image/png", "image/webp"];
+      if (!allowedTypes.includes(file.type)) {
+        showStatus("Envie uma imagem válida em JPG, PNG ou WEBP.", "error");
+        fotoInput.value = "";
+        previewBox.style.display = "none";
+        return;
+      }
+
+      if (file.size > 10 * 1024 * 1024) {
+        showStatus("A foto deve ter no máximo 10 MB.", "error");
+        fotoInput.value = "";
+        previewBox.style.display = "none";
+        return;
+      }
+
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        previewImg.src = e.target.result;
+        previewBox.style.display = "block";
+      };
+      reader.readAsDataURL(file);
+      clearStatus();
+    });
+
+    form.addEventListener("submit", async (e) => {
+      e.preventDefault();
+      clearStatus();
+
+      const turma = document.getElementById("turma").value.trim();
+      const aluno = document.getElementById("aluno").value.trim();
+      const mae = document.getElementById("mae").value.trim();
+      const foto = fotoInput.files[0];
+
+      if (!turma || !aluno || !mae || !foto) {
+        showStatus("Preencha todos os campos e selecione uma foto.", "error");
+        return;
+      }
+
+      submitBtn.disabled = true;
+      submitBtn.textContent = "Enviando...";
+
+      try {
+        const safeAluno = aluno.normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/[^a-zA-Z0-9 ]/g, "").replace(/\s+/g, "_");
+        const safeTurma = turma.replace(/\s+/g, "_");
+        const fileName = `${Date.now()}_${safeTurma}_${safeAluno}.${foto.name.split('.').pop()}`;
+        const storageRef = ref(storage, `dia-das-maes/${safeTurma}/${fileName}`);
+
+        await uploadBytes(storageRef, foto);
+        const fotoURL = await getDownloadURL(storageRef);
+
+        await addDoc(collection(db, "envios_dia_das_maes"), {
+          turma,
+          aluno,
+          mae,
+          fotoURL,
+          nomeArquivo: fileName,
+          criadoEm: serverTimestamp()
+        });
+
+        form.reset();
+        previewBox.style.display = "none";
+        showStatus("Foto enviada com sucesso. Obrigado pelo envio!", "success");
+      } catch (error) {
+        console.error(error);
+        showStatus(`Erro ao enviar: ${error?.message || "Verifique o Firebase e tente novamente."}`, "error");
+      } finally {
+        submitBtn.disabled = false;
+        submitBtn.textContent = "Enviar foto";
+      }
+    });
+
+    function showStatus(message, type) {
+      statusBox.textContent = message;
+      statusBox.className = `status ${type}`;
+    }
+
+    function clearStatus() {
+      statusBox.textContent = "";
+      statusBox.className = "status";
+    }
+  </script>
+</body>
+</html>
